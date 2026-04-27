@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aaron Cohen — AI Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0c0c0c;
+    --surface: #141414;
+    --border: #222;
+    --fg: #e8e4de;
+    --muted: #706b63;
+    --accent: #e05a33;
+    --green: #4ade80;
+    --serif: 'Playfair Display', Georgia, serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--mono);
+    background: var(--bg);
+    color: var(--fg);
+    font-size: 13px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  ::selection { background: var(--accent); color: var(--bg); }
+
+  body::after {
+    content: '';
+    position: fixed; inset: 0; z-index: 9999;
+    pointer-events: none;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 48px;
+    background: rgba(12,12,12,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--accent); }
+  nav ul { display: flex; gap: 32px; list-style: none; }
+  nav ul a {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    transition: color 0.3s;
+  }
+  nav ul a:hover { color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    min-height: 60vh;
+    display: flex; align-items: flex-end;
+    padding: 0 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-content { position: relative; width: 100%; }
+  .hero-top {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 48px;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(44px, 8vw, 96px);
+    line-height: 0.95;
+    letter-spacing: -2px;
+    animation: fadeUp 0.7s ease both;
+  }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero-meta {
+    text-align: right;
+    animation: fadeUp 0.7s ease 0.1s both;
+  }
+  .hero-meta p {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .status-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    margin-right: 6px;
+    animation: blink 2s ease infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .hero-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    animation: fadeUp 0.7s ease 0.2s both;
+  }
+  .hero-bar p {
+    max-width: 520px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.8;
+    font-weight: 300;
+  }
+  .hero-links { display: flex; gap: 24px; }
+  .hero-links a {
+    font-size: 11px; text-transform: uppercase;
+    letter-spacing: 1.5px; color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 10px 20px;
+    transition: all 0.3s;
+  }
+  .hero-links a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTIONS */
+  section { padding: 120px 48px; }
+  .section-header {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 64px;
+  }
+  .section-num { font-size: 11px; color: var(--accent); letter-spacing: 2px; }
+  .section-line { flex: 1; height: 1px; background: var(--border); }
+  .section-title {
+    font-size: 11px; text-transform: uppercase;
+    letter-spacing: 3px; color: var(--muted);
+  }
+
+  /* ABOUT */
+  .about { border-top: 1px solid var(--border); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+  }
+  .about-left h2 {
+    font-family: var(--serif);
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -1px;
+    margin-bottom: 32px;
+  }
+  .about-left h2 em { font-style: italic; color: var(--accent); }
+  .about-left p {
+    color: var(--muted); font-weight: 300;
+    line-height: 1.9; margin-bottom: 16px;
+  }
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--border);
+  }
+  .tech-item {
+    background: var(--bg);
+    padding: 20px 24px;
+    transition: background 0.3s;
+  }
+  .tech-item:hover { background: var(--surface); }
+  .tech-label {
+    font-size: 10px; text-transform: uppercase;
+    letter-spacing: 2px; color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .tech-value { font-size: 13px; color: var(--fg); }
+
+  /* PROJECTS */
+  .work { border-top: 1px solid var(--border); }
+  .project {
+    display: block;
+    border: 1px solid var(--border);
+    margin-bottom: 2px;
+    transition: border-color 0.4s, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .project:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .project-featured {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .project-info { padding: 48px; }
+  .project-num {
+    font-size: 10px; color: var(--accent);
+    letter-spacing: 3px; margin-bottom: 20px;
+  }
+  .project h3 {
+    font-family: var(--serif);
+    font-size: 32px;
+    font-weight: 400;
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+  .project-subtitle {
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+    font-weight: 400;
+  }
+  .project p {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 1.8;
+    margin-bottom: 24px;
+  }
+  .project-stats {
+    display: flex; gap: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .project-stat { font-size: 11px; color: var(--muted); }
+  .project-stat strong { color: var(--fg); }
+  .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag {
+    font-size: 10px; text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 5px 14px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    transition: all 0.3s;
+  }
+  .project:hover .tag { border-color: #333; }
+  .project-visual {
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .project-visual-code {
+    font-size: 11px;
+    color: var(--muted);
+    opacity: 0.5;
+    padding: 48px;
+    white-space: pre;
+    line-height: 1.8;
+    font-weight: 300;
+  }
+  .project-arrow {
+    position: absolute;
+    top: 24px; right: 24px;
+    font-size: 18px;
+    color: var(--accent);
+    opacity: 0;
+    transform: translate(-8px, 8px);
+    transition: all 0.3s;
+  }
+  .project:hover .project-arrow {
+    opacity: 1;
+    transform: translate(0,0);
+  }
+  .project-private {
+    cursor: default;
+  }
+  .project-private:hover {
+    transform: none;
+    border-color: var(--border);
+  }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+  .project-grid .project-info { padding: 36px; }
+  .project-grid .project h3 { font-size: 24px; }
+
+  /* EXPERIENCE */
+  .experience { border-top: 1px solid var(--border); }
+  .exp-list { display: flex; flex-direction: column; }
+  .exp-item {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 48px;
+    padding: 36px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .exp-item:first-child { padding-top: 0; }
+  .exp-item:last-child { border-bottom: none; }
+  .exp-date {
+    font-size: 12px;
+    color: var(--fg);
+    font-weight: 400;
+  }
+  .exp-location {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .exp-right h3 {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 400;
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+  .exp-company {
+    font-size: 12px;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .exp-company span {
+    color: var(--muted);
+  }
+  .exp-right p {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 1.8;
+  }
+
+  /* CERTS */
+  .certs {
+    border-top: 1px solid var(--border);
+    padding-top: 80px;
+    padding-bottom: 80px;
+  }
+  .cert-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+  }
+  .cert-item {
+    background: var(--bg);
+    padding: 28px 32px;
+  }
+  .cert-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .cert-value {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 400;
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .cert-meta {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* CONTACT */
+  .contact { border-top: 1px solid var(--border); }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 80px;
+    align-items: end;
+  }
+  .contact h2 {
+    font-family: var(--serif);
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -2px;
+    margin-bottom: 24px;
+  }
+  .contact h2 em { font-style: italic; color: var(--accent); }
+  .contact-desc {
+    color: var(--muted); font-weight: 300;
+    font-size: 12px; line-height: 1.8;
+  }
+  .contact-list {
+    display: flex; flex-direction: column;
+    border: 1px solid var(--border);
+  }
+  .contact-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.3s, color 0.3s;
+    font-size: 12px;
+  }
+  .contact-item:last-child { border-bottom: none; }
+  .contact-item:hover { background: var(--surface); color: var(--accent); }
+  .contact-item span:last-child { color: var(--muted); font-size: 11px; }
+  .contact-item:hover span:last-child { color: var(--accent); }
+
+  /* FOOTER */
+  footer {
+    padding: 24px 48px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between;
+    font-size: 10px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 1.5px;
+  }
+
+  /* REVEAL */
+  .reveal {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    nav ul { gap: 16px; }
+    section { padding: 80px 20px; }
+    .hero { padding: 0 20px 60px; }
+    .hero-top { flex-direction: column; align-items: flex-start; gap: 24px; }
+    .hero-meta { text-align: left; }
+    .hero-bar { flex-direction: column; gap: 24px; align-items: flex-start; }
+    .about-grid { grid-template-columns: 1fr; gap: 48px; }
+    .tech-grid { grid-template-columns: 1fr; }
+    .project-featured { grid-template-columns: 1fr; }
+    .project-visual { display: none; }
+    .project-grid { grid-template-columns: 1fr; }
+    .exp-item { grid-template-columns: 1fr; gap: 12px; }
+    .cert-row { grid-template-columns: 1fr; }
+    .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+    footer { flex-direction: column; gap: 8px; padding: 24px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="logo">AC<span>.</span></a>
+  <ul>
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-top">
+      <h1>Aaron<br><em>Cohen</em></h1>
+      <div class="hero-meta">
+        <p>AI Engineer</p>
+        <p>Charlotte, NC</p>
+        <p style="margin-top: 12px;"><span class="status-dot"></span> Available</p>
+      </div>
+    </div>
+    <div class="hero-bar">
+      <p>I build production AI systems — safety harnesses for coding agents, RAG pipelines over knowledge graphs, and fintech tools pulling live SEC data. Most of my work sits between LLMs and real systems.</p>
+      <div class="hero-links">
+        <a href="https://github.com/musicofhel" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://www.linkedin.com/in/aaroncohen430/" target="_blank" rel="noopener noreferrer">Get in touch</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="about" id="about">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <span class="section-line"></span>
+    <span class="section-title">About</span>
+  </div>
+  <div class="about-grid reveal">
+    <div class="about-left">
+      <h2>AI engineer, prototypes to <em>production</em></h2>
+      <p>BA Computer Science from UNC Charlotte, Azure AI certified. I build production RAG systems, LLM-powered tools, and agent infrastructure — from safety harnesses that block dangerous AI actions in under 5ms to fintech products pulling live SEC data.</p>
+      <p>Currently focused on AI agent safety, MCP tooling, knowledge graph pipelines, and mechanistic interpretability research. Strong at explaining technical concepts to non-technical stakeholders.</p>
+    </div>
+    <div>
+      <div class="tech-grid">
+        <div class="tech-item">
+          <div class="tech-label">Languages</div>
+          <div class="tech-value">Python · Rust · TypeScript · SQL</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-label">AI & LLMs</div>
+          <div class="tech-value">Claude API · OpenAI · RAG · LangChain</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-label">Infrastructure</div>
+          <div class="tech-value">Neo4j · PostgreSQL · Docker · Qdrant</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-label">Automation</div>
+          <div class="tech-value">MCP · Claude Code Hooks · BullMQ</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-label">Frontend</div>
+          <div class="tech-value">React Native · D3 · FastAPI</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-label">Credentials</div>
+          <div class="tech-value">BA CS (UNCC) · Azure AI Certified</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="experience" id="experience">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <span class="section-line"></span>
+    <span class="section-title">Experience</span>
+  </div>
+  <div class="exp-list reveal">
+    <div class="exp-item">
+      <div class="exp-left">
+        <div class="exp-date">Jun – Aug 2024</div>
+        <div class="exp-location">Tel Aviv, Israel</div>
+      </div>
+      <div class="exp-right">
+        <h3>AI Prototype Engineer Intern</h3>
+        <div class="exp-company">Orange-Pay <span>· Fintech Startup</span></div>
+        <p>Built AI prototypes from concept to deployment. Partnered with Product, Finance, and Operations to identify automation opportunities. Delivered demos and training to non-technical stakeholders.</p>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-left">
+        <div class="exp-date">Sep 2024 – Present</div>
+        <div class="exp-location">Matthews, NC</div>
+      </div>
+      <div class="exp-right">
+        <h3>Client Services</h3>
+        <div class="exp-company">Turn-Key Solutions</div>
+        <p>Translate technical requirements for non-technical clients. Maintain cross-functional relationships across teams.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="certs" id="certs">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <span class="section-line"></span>
+    <span class="section-title">Education & Certifications</span>
+  </div>
+  <div class="cert-row reveal">
+    <div class="cert-item">
+      <div class="cert-label">Degree</div>
+      <div class="cert-value">B.A. Computer Science, IT Concentration</div>
+      <div class="cert-meta">UNC Charlotte · 2020 – 2025</div>
+    </div>
+    <div class="cert-item">
+      <div class="cert-label">Certification</div>
+      <div class="cert-value">Azure AI Engineer Associate</div>
+      <div class="cert-meta">Microsoft · Feb 2025</div>
+    </div>
+    <div class="cert-item">
+      <div class="cert-label">Certification</div>
+      <div class="cert-value">AI Engineer for Data Scientists Associate</div>
+      <div class="cert-meta">DataCamp · 2026</div>
+    </div>
+  </div>
+</section>
+
+<section class="work" id="work">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <span class="section-line"></span>
+    <span class="section-title">Selected Work</span>
+  </div>
+
+  <!-- dev-loop: featured -->
+  <a href="https://github.com/musicofhel/dev-loop" target="_blank" rel="noopener noreferrer" class="project project-featured reveal">
+    <div class="project-info">
+      <div class="project-num">001</div>
+      <h3>dev-loop</h3>
+      <div class="project-subtitle">Safety harness for AI coding agents</div>
+      <p>Sits between the AI agent and your codebase. Intercepts every file write, edit, and shell command — blocks dangerous ones in under 5ms. Runs Semgrep, secret detection, and tests at commit time. Seven-layer closed loop with LLMOps prompt optimization. Open source, zero paid dependencies.</p>
+      <div class="project-stats">
+        <span class="project-stat"><strong>997</strong> tests</span>
+        <span class="project-stat"><strong>&lt;5ms</strong> Tier 1</span>
+        <span class="project-stat"><strong>7</strong> layers</span>
+        <span class="project-stat"><strong>7/7</strong> tracer bullets</span>
+      </div>
+      <div class="tags">
+        <span class="tag">Python</span>
+        <span class="tag">Rust</span>
+        <span class="tag">Claude Code</span>
+        <span class="tag">OpenTelemetry</span>
+      </div>
+    </div>
+    <div class="project-visual">
+      <div class="project-visual-code">$ dl status
+daemon:    running (pid 4821)
+uptime:    3h 12m
+sessions:  2 active
+events:    1,247 processed
+
+tier1:     ██████████ 100%
+tier2:     ████████░░  82%
+blocked:   14 dangerous ops
+secrets:   3 caught</div>
+    </div>
+    <span class="project-arrow">↗</span>
+  </a>
+
+  <!-- topo-confidence: featured -->
+  <a href="https://github.com/musicofhel/topo-confidence" target="_blank" rel="noopener noreferrer" class="project project-featured reveal">
+    <div class="project-info">
+      <div class="project-num">002</div>
+      <h3>topo-confidence</h3>
+      <div class="project-subtitle">LLM hidden-state geometry as a window into reasoning</div>
+      <p>Research project probing whether a model's residual-stream activations can predict chain-of-thought correctness. Found that a single direction in the prefill residual stream predicts answer correctness better than final-token activations after reasoning. Selective prediction at 50% coverage yields 71.6% accuracy vs 48.6% unconditional.</p>
+      <div class="project-stats">
+        <span class="project-stat"><strong>0.77</strong> AUROC</span>
+        <span class="project-stat"><strong>11</strong> pathways</span>
+        <span class="project-stat"><strong>4</strong> models tested</span>
+        <span class="project-stat"><strong>91/91</strong> claims verified</span>
+      </div>
+      <div class="tags">
+        <span class="tag">Python</span>
+        <span class="tag">PyTorch</span>
+        <span class="tag">Mechanistic Interp</span>
+      </div>
+    </div>
+    <div class="project-visual">
+      <div class="project-visual-code">Finding F-1 (STRONG)
+Dimensional breathing:
+  residual-stream PR rises
+  during CoT generation,
+  collapses at answer token.
+
+  Universal across:
+  · Qwen-1.5B
+  · Qwen-7B
+  · Phi-3-mini
+  · Llama-3.2-1B
+
+  Random-token control:
+  flat (PR ≈ 10)</div>
+    </div>
+    <span class="project-arrow">↗</span>
+  </a>
+
+  <!-- Bottom 3 in grid -->
+  <div class="project-grid">
+
+    <div class="project project-private reveal">
+      <div class="project-info">
+        <div class="project-num">003</div>
+        <h3>OmniSwipe</h3>
+        <div class="project-subtitle">AI agent platform with swipe-based code review</div>
+        <p>AI agent system with 20 MCP tools, YAML-defined pipelines, and human-in-the-loop review — swipe right to approve AI-generated code improvements, left to reject. React Native with 15 Zustand stores, Socket.io real-time updates, and 68 Maestro E2E flows.</p>
+        <div class="tags">
+          <span class="tag">React Native</span>
+          <span class="tag">TypeScript</span>
+          <span class="tag">MCP</span>
+          <span class="tag" style="border-color: #333; color: #555;">Private</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="project project-private reveal">
+      <div class="project-info">
+        <div class="project-num">004</div>
+        <h3>Link Forge</h3>
+        <div class="project-subtitle">Knowledge graph forager + MCP server</div>
+        <p>Discord bot scrapes links from an entire guild, categorizes them with Claude, embeds them into a Neo4j knowledge graph (9 node types, 384-dim vectors), and exposes 8 MCP tools for RAG-powered Q&A from any Claude Code session.</p>
+        <div class="tags">
+          <span class="tag">TypeScript</span>
+          <span class="tag">Neo4j</span>
+          <span class="tag">MCP</span>
+          <span class="tag">D3</span>
+          <span class="tag" style="border-color: #333; color: #555;">Private</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <a href="https://burrydcf.com" target="_blank" rel="noopener noreferrer" class="project reveal">
+    <div class="project-info" style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;">
+      <div>
+        <div class="project-num">005</div>
+        <h3>BurryDCF</h3>
+        <div class="project-subtitle">Dilution-aware stock valuation calculator</div>
+        <p>Live fintech tool integrating 3 external APIs (SEC EDGAR, Polygon.io, FRED) into a unified valuation calculator. Implements Michael Burry's Owner's Earnings methodology — compares traditional Gordon Growth Model against a dilution-aware model that accounts for the real cash cost of stock-based compensation.</p>
+        <div class="tags">
+          <span class="tag">Python</span>
+          <span class="tag">FastAPI</span>
+          <span class="tag">GCP</span>
+          <span class="tag">SEC EDGAR</span>
+          <span class="tag">Live Product</span>
+        </div>
+      </div>
+      <div style="text-align: right; color: var(--muted); font-size: 11px; line-height: 2; font-weight: 300;">
+        <span style="color: var(--fg);">burrydcf.com</span><br>
+        SEC EDGAR · Polygon.io · FRED<br>
+        Owner's Earnings methodology<br>
+        SBC dilution correction<br>
+        Real-time multi-API integration
+      </div>
+    </div>
+    <span class="project-arrow">↗</span>
+  </a>
+
+</section>
+
+<section class="contact" id="contact">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <span class="section-line"></span>
+    <span class="section-title">Contact</span>
+  </div>
+  <div class="contact-grid reveal">
+    <div>
+      <h2>Let's build<br>something <em>real</em></h2>
+      <p class="contact-desc">Open to collaborations, interesting problems, and conversations about AI tooling, developer infrastructure, or fintech.</p>
+    </div>
+    <div class="contact-list">
+      <a href="mailto:aaron.cohen1@outlook.com" class="contact-item">
+        <span>Email</span>
+        <span>aaron.cohen1@outlook.com ↗</span>
+      </a>
+      <a href="https://github.com/musicofhel" target="_blank" rel="noopener noreferrer" class="contact-item">
+        <span>GitHub</span>
+        <span>musicofhel ↗</span>
+      </a>
+      <a href="https://www.linkedin.com/in/aaroncohen430/" target="_blank" rel="noopener noreferrer" class="contact-item">
+        <span>LinkedIn</span>
+        <span>aaroncohen430 ↗</span>
+      </a>
+      <a href="https://burrydcf.com" target="_blank" rel="noopener noreferrer" class="contact-item">
+        <span>BurryDCF</span>
+        <span>burrydcf.com ↗</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 Aaron Cohen</span>
+  <span>Charlotte, NC</span>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 100);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
